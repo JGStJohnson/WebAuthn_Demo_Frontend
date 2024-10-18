@@ -9,19 +9,52 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
+stages:
+- stage: Build
+  jobs:
+  - job: build
+    displayName: Build App
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+    - script: |
+        npm install
+        npm run build
+      displayName: 'npm install and build'
+    - task: CopyFiles@2
+      inputs:
+        Contents: 'dist/**/*'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      displayName: 'Copy Project Files'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop_frontend'
+        publishLocation: 'Container'
+      displayName: 'Publish npm artifact'
+- stage: Deploy
+  displayName: Deploy to Azure
+  jobs:
+    - job: deploy
+      displayName: Deploy and test
+      steps:
+      - checkout: none
+      - download: none
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifactName: 'drop_frontend'
+        displayName: Download Artifact
+      
+      - task: AzureStaticWebApp@0
+        displayName: Deploy to static web app
+        inputs:
+          skip_app_build: true
+          skip_api_build: true
+          azure_static_web_apps_api_token: $(deployment_token)
+          workingDirectory: $(Pipeline.Workspace)/dist
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+
