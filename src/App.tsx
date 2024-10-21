@@ -218,11 +218,7 @@ function App() {
                     throw new Error(`Failed to register credential: ${response.statusText}, ${response.status}`);
                 }
 
-                return response.text();
-            })
-            .then((newToken) => {
-                console.log('New Token', newToken, '\nOld Token', accessToken);
-                setAccessToken(newToken);
+                alert("Successfully registered");
             })
             .catch((error) => {
                 console.error(error);
