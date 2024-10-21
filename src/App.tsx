@@ -234,18 +234,18 @@ function App() {
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
                     <label htmlFor='username' className='flex items-center'>
-                        <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg' />
+                        <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg w-full' />
                     </label>
                     <label htmlFor='password' className='flex items-center'>
-                        <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg' />
+                        <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg w-full' />
                     </label>
-                    <label htmlFor='submit' className='col-span-2'>
+                    <label htmlFor='submit' className='md:col-span-2'>
                         <button className='w-full p-2 bg-slate-400 text-white rounded-lg' onClick={() => login()}>Authenticate</button>
                     </label>
-                    <label htmlFor='submit' className='col-span-2'>
+                    <label htmlFor='submit' className='md:col-span-2'>
                         <button className='w-full p-2 bg-slate-400 text-white rounded-lg' onClick={() => loginWebAuthn()}>Authenticate with WebAuthn</button>
                     </label>
-                    <button onClick={() => swapAuthType(true)} className='col-span-2 p-2 hover:underline text-white rounded-lg'>Register</button>
+                    <button onClick={() => swapAuthType(true)} className='md:col-span-2 p-2 hover:underline text-white rounded-lg'>Register</button>
                 </div>
             </div>
         )
@@ -263,18 +263,18 @@ function App() {
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
                     <label htmlFor='username' className='flex items-center'>
-                        <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg' />
+                        <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg w-full' />
                     </label>
                     <label htmlFor='password' className='flex items-center'>
-                        <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg' />
+                        <input type="password" placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg w-full' />
                     </label>
-                    <label htmlFor='password' className='flex items-center col-span-2'>
+                    <label htmlFor='password' className='flex items-center md:col-span-2'>
                         <input type="text" placeholder="Display Name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg w-full' />
                     </label>
-                    <label htmlFor='submit' className='col-span-2'>
+                    <label htmlFor='submit' className='md:col-span-2'>
                         <button className='w-full p-2 bg-slate-400 text-white rounded-lg' onClick={() => register()}>Register</button>
                     </label>
-                    <button className='col-span-2 p-2 hover:underline text-white rounded-lg' onClick={() => swapAuthType(false)}>Back</button>
+                    <button className='md:col-span-2 p-2 hover:underline text-white rounded-lg' onClick={() => swapAuthType(false)}>Back</button>
                 </div>
             </div>
         )
