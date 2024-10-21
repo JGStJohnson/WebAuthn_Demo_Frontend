@@ -186,7 +186,7 @@ function App() {
                         })
                             .then((response) => {
                                 if (!response.ok) {
-                                    throw new Error('Failed to register credential');
+                                    throw new Error(`Failed to register credential, ${response.status}`);
                                 }
 
                                 alert('Successfully registered');
@@ -203,7 +203,7 @@ function App() {
                     })
                     .catch((error) => {
                         console.error(error);
-                        alert('Failed to create credential');
+                        alert(`Failed to create credential: ${error}`);
                     });
             })
     }
