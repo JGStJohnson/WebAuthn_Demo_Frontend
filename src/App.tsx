@@ -182,6 +182,9 @@ function App() {
 
                         fetch(`${import.meta.env.VITE_API_URL}/api/webauthn/register/complete`, {
                             method: 'POST',
+                            headers: {
+                                'authorization': `Bearer ${accessToken}`
+                            },
                             body: form
                         })
                             .then((response) => {
