@@ -11,6 +11,20 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
     return bytes.buffer;
 }
 
+function arrayBufferToBase64(arrayBuffer: ArrayBuffer): string {
+    const byteArray = new Uint8Array(arrayBuffer);
+    let byteString = '';
+    byteArray.forEach((byte) => {
+        byteString += String.fromCharCode(byte);
+    });
+    return btoa(byteString);
+}
+
+function arrayBufferToBase64Url(arrayBuffer: ArrayBuffer): string {
+    const base64 = arrayBufferToBase64(arrayBuffer);
+    return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
 function App() {
     const [isWebAuthnSupported, setIsWebAuthnSupported] = useState<boolean>(false);
     const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -168,47 +182,52 @@ function App() {
                 console.log(options);
                 options.challenge = base64ToArrayBuffer(options.challenge);
                 options.user.id = base64ToArrayBuffer(options.user.id);
-                navigator.credentials.create({
+                return navigator.credentials.create({
                     publicKey: options
                 })
-                    .then((credential) => {
-                        if (!credential) {
-                            throw new Error('Failed to create credential');
-                        }
-                        const form = new FormData();
-                        form.append('username', username);
-                        form.append('displayName', displayName);
-                        form.append('credentialId', credential.id);
-
-                        fetch(`${import.meta.env.VITE_API_URL}/api/webauthn/register/complete`, {
-                            method: 'POST',
-                            headers: {
-                                'authorization': `Bearer ${accessToken}`
-                            },
-                            body: form
-                        })
-                            .then((response) => {
-                                if (!response.ok) {
-                                    throw new Error(`Failed to register credential, ${response.status}`);
-                                }
-
-                                alert('Successfully registered');
-                                return response.json();
-                            })
-                            .then((newToken) => {
-                                console.log(newToken, '\n', accessToken);
-                                setAccessToken(newToken);
-                            })
-                            .catch((error) => {
-                                console.error(error);
-                                alert(`Failed to register credential, ${error}`);
-                            });
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        alert(`Failed to create credential: ${error}`);
-                    });
             })
+            .then((credential) => {
+                if (!credential) {
+                    throw new Error('Failed to create credential');
+                }
+
+                const pubKeyCred = credential as PublicKeyCredential;
+                const attestationResponse = pubKeyCred.response as AuthenticatorAttestationResponse;
+
+                const response = {
+                    id: pubKeyCred.id,
+                    rawId: arrayBufferToBase64Url(pubKeyCred.rawId),
+                    type: pubKeyCred.type,
+                    response: {
+                        attestationObject: arrayBufferToBase64(attestationResponse.attestationObject),
+                        clientDataJSON: arrayBufferToBase64(attestationResponse.clientDataJSON)
+                    },
+                };
+
+                return fetch(`${import.meta.env.VITE_API_URL}/api/webauthn/register/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'authorization': `Bearer ${accessToken}`,
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(response)
+                });
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to register credential');
+                }
+
+                return response.text();
+            })
+            .then((newToken) => {
+                console.log('New Token', newToken, '\nOld Token', accessToken);
+                setAccessToken(newToken);
+            })
+            .catch((error) => {
+                console.error(error);
+                alert(`Failed to register credential: ${error}`);
+            });
     }
 
     if (!isWebAuthnSupported) {
