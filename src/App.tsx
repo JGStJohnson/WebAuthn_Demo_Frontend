@@ -198,7 +198,7 @@ function App() {
                             })
                             .catch((error) => {
                                 console.error(error);
-                                alert('Failed to register credential');
+                                alert(`Failed to register credential, ${error}`);
                             });
                     })
                     .catch((error) => {
