@@ -232,7 +232,7 @@ function App() {
                     <h1 className='text-2xl font-bold'>WebAuthn Demo</h1>
                     <p>To get started authenticate.</p>
                 </div>
-                <div className='grid grid-cols-2 gap-3'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
                     <label htmlFor='username' className='flex items-center'>
                         <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg' />
                     </label>
@@ -261,7 +261,7 @@ function App() {
                     <h1 className='text-2xl font-bold'>WebAuthn Demo</h1>
                     <p>To get started register.</p>
                 </div>
-                <div className='grid grid-cols-2 gap-3'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
                     <label htmlFor='username' className='flex items-center'>
                         <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg' />
                     </label>
