@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 function base64ToArrayBuffer(base64: string): ArrayBuffer {
+    base64 = base64.replace(/-/g, '+').replace(/_/g, '/');
     const binaryString = window.atob(base64);
     const binaryLen = binaryString.length;
     const bytes = new Uint8Array(binaryLen);
