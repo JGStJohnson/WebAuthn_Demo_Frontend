@@ -79,7 +79,7 @@ function App() {
                 console.error(error);
                 alert('Failed to register');
             }
-        )
+            )
     }
 
     function loginWebAuthn() {
@@ -214,8 +214,6 @@ function App() {
         flex flex-col gap-3 justify-around
       '>
                 <div>
-                    <span>{`${'PublicKeyCredential' in window ? "YES": "NO"}`}</span>
-                    <span className='text-white'>{`${'credentials' in navigator ? "YES" : "NO"}`}</span>
                     <h1 className='text-2xl font-bold'>WebAuthn Demo</h1>
                     <p>WebAuthn is not supported in this browser.</p>
                 </div>
