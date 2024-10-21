@@ -173,7 +173,7 @@ function App() {
                     throw new Error('Unauthorized');
                 }
                 if (!response.ok) {
-                    throw new Error('Failed to get registration options');
+                    throw new Error(`Failed to get registration options: ${response.statusText}, ${response.status}`);
                 }
 
                 return response.json();
@@ -215,7 +215,7 @@ function App() {
             })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Failed to register credential');
+                    throw new Error(`Failed to register credential: ${response.statusText}, ${response.status}`);
                 }
 
                 return response.text();
