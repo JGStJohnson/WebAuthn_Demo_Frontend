@@ -55,6 +55,33 @@ function App() {
             });
     }
 
+    function register() {
+        const form = new FormData();
+        form.append('username', username);
+        form.append('password', password);
+        form.append('displayName', displayName);
+
+        fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
+            method: 'POST',
+            body: form
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to register');
+                }
+
+                return response.text();
+            })
+            .then((token) => {
+                setAccessToken(token);
+            })
+            .catch((error) => {
+                console.error(error);
+                alert('Failed to register');
+            }
+        )
+    }
+
     function loginWebAuthn() {
         const formData = new FormData();
         formData.append('username', username);
@@ -246,7 +273,7 @@ function App() {
                         <input type="text" placeholder="Display Name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg w-full' />
                     </label>
                     <label htmlFor='submit' className='col-span-2'>
-                        <button className='w-full p-2 bg-slate-400 text-white rounded-lg'>Authenticate</button>
+                        <button className='w-full p-2 bg-slate-400 text-white rounded-lg' onClick={() => register()}>Register</button>
                     </label>
                     <button className='col-span-2 p-2 hover:underline text-white rounded-lg' onClick={() => swapAuthType(false)}>Back</button>
                 </div>
