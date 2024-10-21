@@ -178,12 +178,11 @@ function App() {
                 if (!response.ok) {
                     throw new Error(`Failed to get registration options: ${response.statusText}, ${response.status}`);
                 }
-                alert(document.cookie);
                 return response.json();
             })
             .then((options) => {
                 console.log(options);
-                alert(document.cookie);
+                alert("received options\n" + "Options cookie\n" + document.cookie);
                 options.challenge = base64ToArrayBuffer(options.challenge);
                 options.user.id = base64ToArrayBuffer(options.user.id);
                 return navigator.credentials.create({
@@ -194,7 +193,7 @@ function App() {
                 if (!credential) {
                     throw new Error('Failed to create credential');
                 }
-
+                alert("created credential");
                 const pubKeyCred = credential as PublicKeyCredential;
                 const attestationResponse = pubKeyCred.response as AuthenticatorAttestationResponse;
 
@@ -210,7 +209,6 @@ function App() {
 
                 return fetch(`${import.meta.env.VITE_API_URL}/api/webauthn/register/complete`, {
                     method: 'POST',
-                    credentials: 'include',
                     headers: {
                         'authorization': `Bearer ${accessToken}`,
                         'content-type': 'application/json'
