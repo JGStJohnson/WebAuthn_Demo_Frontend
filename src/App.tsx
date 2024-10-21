@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+//#region Base64 Stuff
 function base64ToArrayBuffer(base64: string): ArrayBuffer {
     base64 = base64.replace(/-/g, '+').replace(/_/g, '/');
     const binaryString = window.atob(base64);
@@ -24,6 +25,7 @@ function arrayBufferToBase64Url(arrayBuffer: ArrayBuffer): string {
     const base64 = arrayBufferToBase64(arrayBuffer);
     return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
+//#endregion
 
 function App() {
     const [isWebAuthnSupported, setIsWebAuthnSupported] = useState<boolean>(false);
@@ -32,6 +34,7 @@ function App() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [displayName, setDisplayName] = useState<string>('');
+    const [sessionValue, setSessionValue] = useState<string>('');
 
     useEffect(() => {
         if (window.PublicKeyCredential) {
@@ -175,11 +178,12 @@ function App() {
                 if (!response.ok) {
                     throw new Error(`Failed to get registration options: ${response.statusText}, ${response.status}`);
                 }
-
+                alert(document.cookie);
                 return response.json();
             })
             .then((options) => {
                 console.log(options);
+                alert(document.cookie);
                 options.challenge = base64ToArrayBuffer(options.challenge);
                 options.user.id = base64ToArrayBuffer(options.user.id);
                 return navigator.credentials.create({
@@ -224,6 +228,37 @@ function App() {
                 console.error(error);
                 alert(`Failed to register credential: ${error}`);
             });
+    }
+
+    function SetSessionValue() {
+        fetch(`${import.meta.env.VITE_API_URL}/api/SessionTest/${sessionValue}`)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Failed to set session value');
+            }
+            alert("Session value set");
+        })
+        .catch((error) => {
+            console.error(error);
+            alert('Failed to set session value');
+        });
+    }
+
+    function getSessionValue() {
+        fetch(`${import.meta.env.VITE_API_URL}/api/SessionTest`)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Failed to get session value');
+            }
+            return response.text();
+        })
+        .then((data) => {
+            alert(data);
+        })
+        .catch((error) => {
+            console.error(error);
+            alert('Failed to get session value');
+        });
     }
 
     if (!isWebAuthnSupported) {
@@ -293,6 +328,11 @@ function App() {
                         <button className='w-full p-2 bg-slate-400 text-white rounded-lg' onClick={() => register()}>Register</button>
                     </label>
                     <button className='md:col-span-2 p-2 hover:underline text-white rounded-lg' onClick={() => swapAuthType(false)}>Back</button>
+                    <label htmlFor='text' className='md:col-span-2'>
+                        <input type="text" placeholder='Session Value' value={sessionValue} onChange={(e) => setSessionValue(e.target.value)} className='p-2 border-2 border-slate-400 rounded-lg w-full' />
+                    </label>
+                    <button className='md:col-span-2 p-2 bg-slate-400 text-white rounded-lg' onClick={() => SetSessionValue()}>Set Session Value</button>
+                    <button className='md:col-span-2 p-2 bg-slate-400 text-white rounded-lg' onClick={() => getSessionValue()}>Get Session Value</button>
                 </div>
             </div>
         )
