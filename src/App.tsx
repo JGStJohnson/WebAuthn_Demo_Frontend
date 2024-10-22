@@ -209,7 +209,6 @@ function App() {
 
                 return fetch(`${import.meta.env.VITE_API_URL}/api/webauthn/register/complete`, {
                     method: 'POST',
-                    credentials: 'include',
                     headers: {
                         'authorization': `Bearer ${accessToken}`,
                         'content-type': 'application/json'
