@@ -122,46 +122,42 @@ function App() {
             })
             .then((options) => {
                 options.challenge = base64ToArrayBuffer(options.challenge);
-                navigator.credentials.get({
+                return navigator.credentials.get({
                     publicKey: options
                 })
-                    .then((credential) => {
-                        if (!credential) {
-                            throw new Error('Failed to get credential');
-                        }
-
-                        const form = new FormData();
-                        form.append('username', username);
-                        form.append('credentialId', credential.id);
-
-                        fetch(`${import.meta.env.VITE_API_URL}/api/webauthn/login/complete`, {
-                            method: 'POST',
-                            body: form
-                        })
-                            .then((response) => {
-                                if (!response.ok) {
-                                    throw new Error('Failed to login');
-                                }
-
-                                return response.json();
-                            })
-                            .then((newToken) => {
-                                setAccessToken(newToken);
-                            })
-                            .catch((error) => {
-                                console.error(error);
-                                alert('Failed to login');
-                            });
-                    })
-                    .catch((error) => {
-                        alert(error);
-                        alert('Failed to get credential');
-                    });
             })
-            .catch((error) => {
-                console.error(error);
-                alert(error);
-            });
+                .then((credential) => {
+                    if (!credential) {
+                        throw new Error('Failed to get credential');
+                    }
+
+                    const form = new FormData();
+                    form.append('username', username);
+                    form.append('credentialId', credential.id);
+
+                    fetch(`${import.meta.env.VITE_API_URL}/api/webauthn/login/complete`, {
+                        method: 'POST',
+                        body: form
+                    })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Failed to login');
+                            }
+
+                            return response.json();
+                        })
+                        .then((newToken) => {
+                            setAccessToken(newToken);
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                            alert('Failed to login');
+                        });
+                })
+                .catch((error) => {
+                    alert(error);
+                    alert('Failed to get credential');
+                });
     }
 
     function registerWebAuthn() {
