@@ -114,6 +114,7 @@ function App() {
                     throw new Error('Unauthorized');
                 }
                 if (!response.ok) {
+                    alert("Failed to get login options\n" + "\n" + response.statusText + "\n" + response.status);
                     throw new Error('Failed to get login options');
                 }
 
@@ -153,7 +154,7 @@ function App() {
                             });
                     })
                     .catch((error) => {
-                        console.error(error);
+                        alert(error);
                         alert('Failed to get credential');
                     });
             })
